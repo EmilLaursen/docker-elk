@@ -1,0 +1,92 @@
+PUT /articles
+{
+  "settings": {
+    "analysis": {
+    "filter": {
+      "danish_stop": {
+        "type": "stop",
+        "stopwords": "_danish_"
+      },
+      "danish_keywords": {
+        "type": "keyword_marker",
+        "keywords": [
+          "stille",
+          "vide",
+          "lede"
+        ]
+      },
+      "danish_stemmer": {
+        "type": "stemmer",
+        "language": "danish"
+      }
+    },
+    "analyzer": {
+      "rebuilt_danish": {
+        "tokenizer": "standard",
+        "char_filter": [
+          "html_strip"
+        ],
+        "filter": [
+          "lowercase",
+          "danish_stop",
+          "danish_keywords",
+          "danish_stemmer"
+        ]
+      }
+    },
+    "normalizer": {
+        "keyword_normalizer": {
+          "type": "custom",
+          "filter": [
+            "lowercase",
+            "asciifolding",
+            "scandinavian_folding"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "body": {
+        "type": "text",
+        "analyzer": "rebuilt_danish"
+      },
+      "authors": {
+        "type": "keyword",
+        "normalizer": "keyword_normalizer",
+        "eager_global_ordinals": true
+      },
+      "alt_authors": {
+        "type": "keyword",
+        "normalizer": "keyword_normalizer",
+        "eager_global_ordinals": true
+      },
+      "section": {
+        "type": "keyword",
+        "normalizer": "keyword_normalizer",
+        "eager_global_ordinals": true
+      },
+      "title": {
+        "type": "text",
+        "analyzer": "rebuilt_danish"
+      },
+      "sub_title": {
+        "type": "text",
+        "analyzer": "rebuilt_danish"
+      },
+      "date": {
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ss"
+      },
+      "scrape_date": {
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ss"
+      },
+      "url": {
+        "type": "text",
+        "index": false
+      }
+    }
+  }
+}
